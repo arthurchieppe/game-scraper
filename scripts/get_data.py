@@ -21,6 +21,5 @@ if __name__ == "__main__":
     links_df = pd.read_csv("reviews_links.csv")
     save_to_csv(links_df, "reviews_links.csv")
     # Get only 5 first rows of df
-    links_df = links_df.head(5)
     reviews_df = ReviewContentScraper.scrape_reviews(links_df)
     save_to_csv(reviews_df, "reviews_content.csv")

@@ -44,7 +44,7 @@ class ReviewContentScraper:
                 link = row["link"]
                 content = ReviewContentScraper.scrape_page(link)
                 reviews.append({"title": title, "link": link, "content": content})
-                time.sleep(5)
+                time.sleep(10)
         except Exception as e:
             logging.error(f"An error occurred: {e}")
         return pd.DataFrame(reviews)
