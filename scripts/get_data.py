@@ -1,47 +1,26 @@
-import requests
-from bs4 import BeautifulSoup
-from tqdm import tqdm
-import time
 import logging
+from ReviewLinkScraper import ReviewLinkScraper
+from ReviewContentScraper import ReviewContentScraper
+from datetime import datetime
+import pandas as pd
 
-# Function to scrape game reviews from a specific page
-def scrape_reviews(page_number):
-    url = f"https://gamerant.com/game-reviews/{page_number}/"
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    
-    # Find the main div containing the list of games
-    main_div = soup.find('div', class_='sentinel-listing-page-list')
-    if not main_div:
-        return []  # Return empty if the main div is not found
 
-    # Extract the relevant data from the children of the main div
-    reviews = []
-    game_divs = main_div.find_all('div', recursive=False)
-    
-    for index, game_div in enumerate(game_divs):
-        a_tag = game_div.find('a')
-        if a_tag:
-            link = "https://gamerant.com" + a_tag['href']
+def save_to_csv(df, filename) -> None:
+    now = datetime.now()
+    filename = filename.replace(".csv", "")
+    timestamp = now.strftime("%Y%m%d_%H%M%S")
+    file_to_save = f"{filename}_{timestamp}.csv"
+    df.to_csv(file_to_save, index=False)
 
-        # game_div.find('div', class_='w-display-card-content regular article-block')
-        # if game_div:
-        title = game_div.find('h5', class_='display-card-title').get_text(strip=True)
-        
-        if title and link:
-            reviews.append({'title': title, 'link': link})
-        else:
-            logging.warning(f"Missing data for game {index + 1} on page {page_number}")
 
-    
-    return reviews
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
 
-# Example usage: Scrape the first 3 pages
-all_reviews = []
-for i in tqdm(range(1, 4), desc="Página: "):  # Pode ir até 75
-    all_reviews.extend(scrape_reviews(i))
-    time.sleep(1)  # Add a delay to prevent overwhelming the server
-
-# Print the scraped data
-for review in all_reviews:
-    print(review)
+    # Get all review links from the first 75 pages
+    # links_df = ReviewLinkScraper.get_all_review_links(range(1, 3))
+    links_df = pd.read_csv("reviews_links.csv")
+    save_to_csv(links_df, "reviews_links.csv")
+    # Get only 5 first rows of df
+    links_df = links_df.head(5)
+    reviews_df = ReviewContentScraper.scrape_reviews(links_df)
+    save_to_csv(reviews_df, "reviews_content.csv")
