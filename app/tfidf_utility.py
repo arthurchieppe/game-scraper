@@ -80,8 +80,8 @@ class TfidfUtility:
                     "relevance": float(relevance),
                 }
             )
-        for result in results:
-            print()
-            print(result)
+        # for result in results:
+        #     print()
+        #     print(result)
 
         return results
