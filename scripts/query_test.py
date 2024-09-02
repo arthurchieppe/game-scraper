@@ -1,11 +1,11 @@
-from models.train_tfidf import TfidfHelper
+from app.tfidf_utility import TfidfUtility
 import logging
 import pandas as pd
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     df = pd.read_csv("./data/reviews_content_20240828_052643.csv")
-    tfidf = TfidfHelper(df)
+    tfidf = TfidfUtility(df)
     # tfidf.train()
     tfidf_path = "./models/tfidf.pkl"
     documents_vector_path = "./models/documents_vector.pkl"

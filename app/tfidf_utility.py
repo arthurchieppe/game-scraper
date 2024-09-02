@@ -8,22 +8,56 @@ import logging
 import pprint as pp
 
 
-class TfidfHelper:
-    def __init__(self, df: pd.DataFrame, threshold=0.1):
-        self.data = df
+class TfidfUtility:
+    def __init__(
+        self,
+        df: pd.DataFrame,
+        tfidf_vectorizer: TfidfVectorizer,
+        documents_vector,
+        threshold=0.1,
+    ):
+        self.df = df
         self.threshold = threshold
-        self.tfidf = None
-        self.documents_vector = None
+        self.vectorizer = tfidf_vectorizer
+        self.documents_vector = documents_vector
+
+    @classmethod
+    def load(
+        cls, data_path: str, tfidf_path: str, documents_vector_path: str, threshold=0.1
+    ):
+        try:
+            if not os.path.exists(data_path):
+                raise FileNotFoundError(f"Data file not found: {data_path}")
+            if not os.path.exists(tfidf_path):
+                raise FileNotFoundError(
+                    f"TF-IDF vectorizer file not found: {tfidf_path}"
+                )
+            if not os.path.exists(documents_vector_path):
+                raise FileNotFoundError(
+                    f"Documents vector file not found: {documents_vector_path}"
+                )
+
+            data = pd.read_csv(data_path)
+            vectorizer = joblib.load(tfidf_path)
+            documents_vector = joblib.load(documents_vector_path)
+        except FileNotFoundError as e:
+            print(e)
+            return None
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
+
+        return cls(data, vectorizer, documents_vector, threshold)
 
     def train(self) -> None:
         # Load data
 
         # Train model
-        self.tfidf = TfidfVectorizer()
-        self.documents_vector = self.tfidf.fit_transform(self.data["content"])
+        self.vectorizer = TfidfVectorizer()
+        self.documents_vector = self.vectorizer.fit_transform(self.data["content"])
 
         # Save model
-        joblib.dump(self.tfidf, "./models/tfidf.pkl")
+        joblib.dump(self.vectorizer, "./models/tfidf.pkl")
         joblib.dump(self.documents_vector, "./models/documents_vector.pkl")
 
         logging.info("Data shape: " + str(self.data.shape))
@@ -33,16 +67,16 @@ class TfidfHelper:
 
     def load_model(self, tfidf_path: str, documents_vector_path: str):
         if os.path.exists(tfidf_path) and os.path.exists(documents_vector_path):
-            self.tfidf = joblib.load(tfidf_path)
+            self.vectorizer = joblib.load(tfidf_path)
             self.documents_vector = joblib.load(documents_vector_path)
         else:
             raise FileNotFoundError
 
     def query(self, query: str, max_results=10):
-        if self.tfidf is None or self.documents_vector is None:
+        if self.vectorizer is None or self.documents_vector is None:
             raise ValueError("The TF-IDF model is not trained or loaded.")
 
-        query_vector = self.tfidf.transform([query])
+        query_vector = self.vectorizer.transform([query])
 
         relevance_scores = linear_kernel(query_vector, self.documents_vector).flatten()
 
@@ -64,9 +98,9 @@ class TfidfHelper:
                 {
                     "title": row["title"],
                     "content": " ".join(
-                        row["content"].split()[:50]
+                        row["content"].split()[:500]
                     ),  # Only get first 500 words
-                    "relevance": float(relevance),  # VERIFICAR COM VINI
+                    "relevance": float(relevance),
                 }
             )
         for result in results:
