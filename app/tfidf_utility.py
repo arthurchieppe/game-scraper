@@ -42,35 +42,12 @@ class TfidfUtility:
             documents_vector = joblib.load(documents_vector_path)
         except FileNotFoundError as e:
             print(e)
-            return None
+            raise
         except Exception as e:
             print(f"An error occurred: {e}")
-            return None
+            raise
 
         return cls(data, vectorizer, documents_vector, threshold)
-
-    def train(self) -> None:
-        # Load data
-
-        # Train model
-        self.vectorizer = TfidfVectorizer()
-        self.documents_vector = self.vectorizer.fit_transform(self.data["content"])
-
-        # Save model
-        joblib.dump(self.vectorizer, "./models/tfidf.pkl")
-        joblib.dump(self.documents_vector, "./models/documents_vector.pkl")
-
-        logging.info("Data shape: " + str(self.data.shape))
-        logging.info("Document vector shape:" + str(self.documents_vector.shape))
-
-        return
-
-    def load_model(self, tfidf_path: str, documents_vector_path: str):
-        if os.path.exists(tfidf_path) and os.path.exists(documents_vector_path):
-            self.vectorizer = joblib.load(tfidf_path)
-            self.documents_vector = joblib.load(documents_vector_path)
-        else:
-            raise FileNotFoundError
 
     def query(self, query: str, max_results=10):
         if self.vectorizer is None or self.documents_vector is None:
@@ -93,7 +70,7 @@ class TfidfUtility:
         results = []
         for index, relevance in top_results:
             print(index, relevance)
-            row = self.data.iloc[index]
+            row = self.df.iloc[index]
             results.append(
                 {
                     "title": row["title"],
