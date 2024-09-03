@@ -4,8 +4,6 @@ from scripts.review_content_scraper import ReviewContentScraper
 from scripts.tfidf_trainer import TfidfTrainer
 from datetime import datetime
 
-# import pandas as pd
-
 
 # Save the DataFrame to a CSV file with the current timestamp as suffix
 def save_to_csv(df, filename) -> None:
