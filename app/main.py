@@ -27,6 +27,12 @@ tfidf = TfidfUtility.load(
 
 @app.get("/query")
 def query_route(query: str = Query(..., description="Search query")):
+    """
+    Perform a search query on the TF-IDF model.
+
+    - **query**: The search query string.
+    - **returns**: A list of search results and a message.
+    """
     if len(query.strip()) == 0:
         raise HTTPException(status_code=400, detail="Empty query")
     try:
