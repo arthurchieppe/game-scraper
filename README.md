@@ -2,7 +2,7 @@
 
 ## Introduction and motivation
 
-This project is a Game Recommender that utilizes TF-IDF (Term Frequency-Inverse Document Frequency) to reccomend games based on a user descritption of their ideal game. It leverages data scraped from [Gamerant's](https://gamerant.com/game-reviews/) reviews available in their website. These reviews were scraped using BeautifulSoup.
+This project is a Game Recommender that utilizes TF-IDF (Term Frequency-Inverse Document Frequency) to recommend games based on a user descritption of their ideal game. It leverages data scraped from [Gamerant's](https://gamerant.com/game-reviews/) reviews available in their website. These reviews were scraped using BeautifulSoup.
 
 ## Folder structure:
 
