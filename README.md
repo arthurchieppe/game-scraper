@@ -32,9 +32,15 @@ source env/bin/activate
 pip3 install -r requirements.txt
 ```
 
-## Scraping and Training
+4. Add python project root dir to PYTHONPATH. Navigate to the root of project and run the following:
 
-Before running the project, ensure that all necessary configurations and files are in place. This project includes both a scraper and a web server for deploying a trained model, so it's crucial to verify that the required files are correctly located.
+```
+export PYTHONPATH=$(pwd)
+```
+
+## Data Scraping and Training
+
+Before running the project, ensure that all necessary configurations and files are in place. This project includes both a scraper and a web server for deploying a trained model, so it's crucial to verify that the required files are correctly located. 
 
 ### Data Directory
 Ensure the following file exists in the `data` directory:
@@ -73,38 +79,59 @@ Currently, the scripts require manual changes to certain variables, such as the 
 
 Assuming all these files are correctly named and place, it is possible to procede
 
-## Scraping and Training Instructions
+## Usage
 
+Before running, make sure the file paths in the app/main.py file are correct. Here is the default version:
+```python
+tfidf = TfidfUtility.load(
+    data_path="./data/reviews_content.csv",
+    tfidf_path="./models/tfidf.pkl",
+    documents_vector_path="./models/documents_vector.pkl",
+)
+```
 
-You can run this project in one of two ways: by manually setting up a Python virtual environment or by using a Docker container.
+You can run the webserver in one of two ways: by manually setting up a Python virtual environment or by using a Docker container.
 
 ### Option 1: Manual Setup with Python Virtual Environment
 
+### Prerequisites
+Python 3.10 (Tested on 3.12.5)
+Docker
+
+To run the API, run the following from the root folder of the project:
+```bash
+python3 app/main.py
+```
 
 
+You can quickly try out the API by acessing the FastAPI documentation at [localhost:8000/docs](http://localhost:8000/docs) with your browser of choice.
 
+You can also use a client such as Postman or curl
 
+## Option 2: Using a Docker Container​
 
+To run this application using docker, first build the docker image:
+```bash
+docker build -t game-scraper .
+```
 
-## Option 2: Using a Docker Container​⬤
+After that, you can run the container with the following command(note that you can change the host port binding):
+```bash
+docker run -p 10136:8888 game-scraper
+```
 
 ### Prerequisites
 Python 3.10 (Tested on 3.12.5)
+Docker
 
 
-## How to run
+## Testing
 
-Run the following in the command line, to ensure all the python project structure and imports work flawlessly.
+Unit tests for relevant cases are included in this project. To execute them, run the following in the terminal from the project's root:
 
+```bash
+pytest test/
 ```
-export PYTHONPATH=$(pwd)
-```
-
-## How it works
-
-## Data sources
-
-## How to test
 
 Here are the three main scenarios and test cases provided:
 
@@ -115,14 +142,6 @@ Here are the three main scenarios and test cases provided:
 * A test that yields something non-obvious (remember to comment why this is non-obvious): "A game that combines elements of horror and educational content". 
 
 The last query is non-obvious because horror games and educational content are typically not associated with each other. The results yielded by this query were such that the most relevant result was an educational game, followed only by horror games. This could be because there are more horror games than educational games in the database. As such, the TF-IDF algorithm preferred the educational game because it is more unique in the context of the database.
-
-
-## Running the Project with Docker
-
-```bash
-docker build -t game-scraper .
-docker run -d -p 10254:8888 game-scraper
-```
 
 
 ## Authors
