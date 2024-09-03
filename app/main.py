@@ -19,7 +19,7 @@ app = FastAPI()
 app.predictor = load_model()
 
 tfidf = TfidfUtility.load(
-    data_path="./data/reviews_content_20240828_052643.csv",
+    data_path="./data/reviews_content.csv",
     tfidf_path="./models/tfidf.pkl",
     documents_vector_path="./models/documents_vector.pkl",
 )
