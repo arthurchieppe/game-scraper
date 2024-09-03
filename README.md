@@ -40,7 +40,7 @@ export PYTHONPATH=$(pwd)
 
 ## Data Scraping and Training
 
-Before running the project, ensure that all necessary configurations and files are in place. This project includes both a scraper and a web server for deploying a trained model, so it's crucial to verify that the required files are correctly located. 
+This project includes both a scraper and a web server for deploying a trained model. Before running the project it is important to verify that all files required to execute the model are available and correctly located and named.
 
 ### Data Directory
 Ensure the following file exists in the `data` directory:
@@ -52,20 +52,18 @@ Ensure the following file exists in the `data` directory:
 ### Models Directory
 Ensure the following files are available in the `models` directory:
 - **tfidf.pkl**: Serialized TF-IDF vectorizer object.
-- **documents_vector.pkl**: TF-IDF matrix of the scraped documents.
+- **documents_vector.pkl**: Serialized TF-IDF matrix of the scraped documents.
 
-If you have all these files inplace and correctly names, you are free to skip the remaining of this section. If any of these files are missing, you will need to run the training script:
+If you have all these files inplace and correctly named, you are free to skip to the **[usage](#usage)** section. If any of these files are missing, you will need to run the training script:
 
 ```
 python3 scripts/get_data_and_train.py
 ```
 
 This script has three main parts to it:
-1. **Scrape for all review links**: during this part the scraper will cycle through all the pages in https://gamerant.com/game-reviews/1 all the way to https://gamerant.com/game-reviews/75, which is the max number of pages in the website. This way, the scraper can make a collection of all the available game titles and review links in a relatively short period of time. The results will be a datafram, which will be saved as a csv file with the prefix review_links and the timestamp as a suffix.
+1. **Scrape for all review links**: during this part the scraper will cycle through all the pages in https://gamerant.com/game-reviews/1 all the way to https://gamerant.com/game-reviews/75, which is the max number of pages in the website. This way, the scraper can make a collection of all the available game titles and review links in a relatively short period of time. The results will be a dataframe, which will be saved as a csv file with the prefix `reviews_links` and the timestamp as a suffix.
 
-2. **Scrape through all the gathered links**: In this part, the scraper will visit each review link collected in the first step. It will extract the review content, including the title, link, and review text. The results will be compiled into a dataframe and saved as a CSV file named `reviews_content.csv` in the `data` directory, with the timestamp as the filename suffix.
-
-Currently, the scripts require manual changes to certain variables, such as the file paths for the data and model files. As such, it is important to remove the timestamp from the filename, as it is only there to prevent accidental overwrites. Since this file will be used for further processing and model training, it should be named appropriately. Future updates will include modular scripts that support environment variables for easier configuration.
+2. **Scrape through all the gathered links**: In this part, the scraper will visit each review link collected in the first step. It will extract the review content, including the title, link, and review text. The results will be compiled into a dataframe and saved as a CSV file named `reviews_content` in the `data` directory, with the timestamp as the filename suffix.
 
 3. Training: In this step, the `TfidfTrainer` class from the provided code will be used to train a TF-IDF vectorizer on the review content. The process involves the following steps:
 
@@ -77,11 +75,13 @@ Currently, the scripts require manual changes to certain variables, such as the 
   - Logs the shapes of the input data and the resulting document vectors.
 - **Error Handling**: The method includes error handling for common issues such as missing columns, fitting errors, and missing directories.
 
-Assuming all these files are correctly named and place, it is possible to procede
+Currently, the scripts require manual changes to certain variables, such as the file paths for the data and model files. As such, it is important to remove the timestamp from the filename, as it is only there to prevent accidental overwrites. Since this file will be used for further processing and model training, it should be named appropriately. Future updates will include modular scripts that support environment variables for easier configuration.
+
+Assuming all these files are correctly named and place, it is possible to proceed.
 
 ## Usage
 
-Before running, make sure the file paths in the app/main.py file are correct. Here is the default version:
+Before running the project, ensure that the file paths specified during the instantiation of the `TfidfUtility` class in `app/main.py` are correct. Below is the default configuration:
 ```python
 tfidf = TfidfUtility.load(
     data_path="./data/reviews_content.csv",
@@ -90,13 +90,16 @@ tfidf = TfidfUtility.load(
 )
 ```
 
-You can run the webserver in one of two ways: by manually setting up a Python virtual environment or by using a Docker container.
+You can run the web server in one of two ways:
+
+1. **[Manually setting up a Python virtual environment](#option-1-manual-setup-with-python-virtual-environment)**
+
+2. **[Using a Docker container](#option-2-using-a-docker-container)**
 
 ### Option 1: Manual Setup with Python Virtual Environment
 
 ### Prerequisites
-Python 3.10 (Tested on 3.12.5)
-Docker
+- Python 3.10 (Tested on 3.12.5)
 
 To run the API, run the following from the root folder of the project:
 ```bash
@@ -108,7 +111,10 @@ You can quickly try out the API by acessing the FastAPI documentation at [localh
 
 You can also use a client such as Postman or curl
 
-## Option 2: Using a Docker Container​
+### Option 2: Using a Docker Container​
+
+### Prerequisites
+- Docker
 
 To run this application using docker, first build the docker image:
 ```bash
@@ -120,9 +126,6 @@ After that, you can run the container with the following command(note that you c
 docker run -p 10136:8888 game-scraper
 ```
 
-### Prerequisites
-Python 3.10 (Tested on 3.12.5)
-Docker
 
 
 ## Testing
