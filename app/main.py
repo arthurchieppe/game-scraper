@@ -2,7 +2,7 @@ from fastapi import FastAPI, Query, HTTPException
 import os
 import uvicorn
 
-from tfidf_utility import TfidfUtility
+from app.tfidf_utility import TfidfUtility
 
 
 class DummyModel:
@@ -23,21 +23,6 @@ tfidf = TfidfUtility.load(
     tfidf_path="./models/tfidf.pkl",
     documents_vector_path="./models/documents_vector.pkl",
 )
-
-
-# @app.get("/hello")
-# def read_hello():
-#     return {"message": "hello world"}
-
-
-# @app.get("/predict")
-# def predict(X: str = Query(..., description="Input text for prediction")):
-#     result = app.predictor.predict(X)
-#     return {
-#         "input_value": X,
-#         "predicted_value": result,
-#         "message": "prediction successful",
-#     }
 
 
 @app.get("/query")

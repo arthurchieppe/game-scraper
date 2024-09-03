@@ -69,7 +69,6 @@ class TfidfUtility:
 
         results = []
         for index, relevance in top_results:
-            print(index, relevance)
             row = self.df.iloc[index]
             results.append(
                 {
