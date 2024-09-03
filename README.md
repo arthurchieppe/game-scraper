@@ -138,11 +138,11 @@ pytest test/
 
 Here are the three main scenarios and test cases provided:
 
-* A test that yields 10 results: "A racing game with mercedes cars"
+* A test that yields 10 results: "A racing game with mercedes cars": http://10.103.0.28:10136/query?query=A%20racing%20game%20with%20mercedes%20cars
 
-* A test that yields more than 1, but less than 10 results because there are not enough relevant documents in the database: "A puzzle game featuring portal and teleportation mechanics"
+* A test that yields more than 1, but less than 10 results because there are not enough relevant documents in the database: "A puzzle game featuring portal and teleportation mechanics": http://10.103.0.28:10136/query?query=A%20puzzle%20game%20featuring%20portal%20and%20teleportation%20mechanics
 
-* A test that yields something non-obvious (remember to comment why this is non-obvious): "A game that combines elements of horror and educational content". 
+* A test that yields something non-obvious (remember to comment why this is non-obvious): "A game that combines elements of horror and educational content": http://10.103.0.28:10136/query?query=A%20game%20that%20combines%20elements%20of%20horror%20and%20educational%20content
 
 The last query is non-obvious because horror games and educational content are typically not associated with each other. The results yielded by this query were such that the most relevant result was an educational game, followed only by horror games. This could be because there are more horror games than educational games in the database. As such, the TF-IDF algorithm preferred the educational game because it is more unique in the context of the database.
 
